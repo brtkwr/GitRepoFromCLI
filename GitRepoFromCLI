@@ -5,15 +5,18 @@ read -s PASSWORD
 read -p "repository name: " REPO
 read -p "description: "	DESC
 read -p "homepage: " HOMEPAGE
-read -p "private [yY]: " PRIVATE
-read -p "add README.md [yY]:" README
+read -p "private [n]: " PRIVATE
+read -p "add README.md [y]:" README
 
-DATA='"name":"'$REPO'","description":"'$DESC'","homepage":"'$HOMEPAGE'"'
+DATA=''
+[[ ! -z "$REPO" ]] && DATA='"name":"'$REPO'",'
+[[ ! -z "$DESC" ]] && DATA=$DATA'"description":"'$DESC'",'
+[[ ! -z "$HOMEPAGE" ]] && DATA=$DATA'"homepage":"'$HOMEPAGE'",'
+[[ "$PRIVATE" =~ [yY] ]] && DATA=$DATA'"private":true,'
+[[ -z "$README" || "$README" =~ [yY] ]] && DATA=$DATA'"auto_init":true'
+DATA='{'$DATA'}'
 
-if [[ "$PRIVATE" =~ [yY] ]]; then DATA=$DATA'","private": true'; fi
-if [[ "$README" =~ [yY] ]]; then DATA=$DATA'","auto_init": true'; fi
-
-curl -u $USERNAME:$PASSWORD https://api.github.com/user/repos -d '{'$DATA'}'
+curl -u $USERNAME:$PASSWORD https://api.github.com/user/repos --data $DATA
 
 git init
 git remote add origin http://www.github.com/$USERNAME/$REPO
