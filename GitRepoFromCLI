@@ -1,16 +1,20 @@
 #!/bin/bash
-echo $#
-if [ $# -gt 1 ]; then
-	USERNAME=$1
-	REPO=$2
-	curl -u $USERNAME https://api.github.com/user/repos -d '{"name":"'"$REPO"'"}'
-	# Remember replace USER with your username and REPO with your repository/application name!
-	git init
-	touch README.md
-	git add README.md
-	git commit -m "Initial commit"
-	git remote add origin http://www.github.com/$USERNAME/$REPO
-	git push origin master
-else
-    echo "Usage: $ createGITRepoFromCLI username RepositoryName"
-fi
+read -p "github username: " USERNAME
+echo "github password: " 
+read -s PASSWORD
+read -p "repository name: " REPO
+read -p "description: "	DESC
+read -p "homepage: " HOMEPAGE
+read -p "private [yY]: " PRIVATE
+read -p "add README.md [yY]:" README
+
+DATA='"name":"'$REPO'","description":"'$DESC'","homepage":"'$HOMEPAGE'"'
+
+if [[ "$PRIVATE" =~ [yY] ]]; then DATA=$DATA'","private": true'; fi
+if [[ "$README" =~ [yY] ]]; then DATA=$DATA'","auto_init": true'; fi
+
+curl -u $USERNAME:$PASSWORD https://api.github.com/user/repos -d '{'$DATA'}'
+
+git init
+git remote add origin http://www.github.com/$USERNAME/$REPO
+git pull origin master
