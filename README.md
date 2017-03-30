@@ -7,3 +7,4 @@ sudo chmod u+x GitRepoFromCLI
 sudo ln -s GitRepoFromCLI /usr/local/bin 
 cd NewRepositoryFolder
 GitRepoFromCLI
+```
