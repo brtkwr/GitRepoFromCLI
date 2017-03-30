@@ -6,6 +6,9 @@ if [ $# -gt 1 ]; then
 	curl -u $USERNAME https://api.github.com/user/repos -d '{"name":"'"$REPO"'"}'
 	# Remember replace USER with your username and REPO with your repository/application name!
 	git init
+	touch README.md
+	git add README.md
+	git commit -m "Initial commit"
 	git remote add origin http://www.github.com/$USERNAME/$REPO
 	git push origin master
 else
