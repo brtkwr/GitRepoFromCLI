@@ -19,5 +19,5 @@ DATA='{'$DATA'}'
 curl -u $USERNAME:$PASSWORD https://api.github.com/user/repos --data $DATA
 
 git init
-git remote add origin http://www.github.com/$USERNAME/$REPO
+git remote add origin git@github.com:$USERNAME/$REPO.git
 git pull origin master
