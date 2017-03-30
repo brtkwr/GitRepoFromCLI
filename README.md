@@ -3,8 +3,10 @@
 ```bash
 git clone http://www.github.com/brtknr/GitRepoFromCLI
 cd GitRepoFromCLI
-sudo chmod u+x GitRepoFromCLI
-sudo ln -s GitRepoFromCLI /usr/local/bin 
+chmod u+x GitRepoFromCLI
+ln -s GitRepoFromCLI ~/.local/bin
+echo 'export PATH=$PATH:~/.local/bin' >> ~/.bashrc
+source ~/.bashrc
 cd NewRepositoryFolder
 GitRepoFromCLI
 ```
