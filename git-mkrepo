@@ -1,23 +1,41 @@
 #!/bin/bash
-read -p "github username: " USERNAME
-echo "github password: " 
-read -s PASSWORD
-read -p "repository name: " REPO
-read -p "description: "	DESC
-read -p "homepage: " HOMEPAGE
-read -p "private [n]: " PRIVATE
-read -p "add README.md [y]:" README
+usage()
+{
+	echo 'Usage: git mkrepo REPOSITORYNAME [-p <private?>] [-d "DESCRIPTION"] [-u http://HOMEPAGE] [-r SSH<default>|HTTP]'
+}
 
-DATA=''
-[[ ! -z "$REPO" ]] && DATA='"name":"'$REPO'",'
-[[ ! -z "$DESC" ]] && DATA=$DATA'"description":"'$DESC'",'
-[[ ! -z "$HOMEPAGE" ]] && DATA=$DATA'"homepage":"'$HOMEPAGE'",'
-[[ "$PRIVATE" =~ [yY] ]] && DATA=$DATA'"private":true,'
-[[ -z "$README" || "$README" =~ [yY] ]] && DATA=$DATA'"auto_init":true'
-DATA='{'$DATA'}'
+if [[ ! -z "$1" || ! "$1" -eq "-"  ]];
+then
+	REPO=$1
+	DATA="\"name\":\"$REPO\""
+	# Ignore first argument
+	OPTIND=2
+	REMOTE=SSH
+	while getopts ":pd:u:" OPT; do
+	  echo $OPTIND
+	  echo $OPT
+	  case $OPT in
+	    p) DATA="$DATA,\"private\":true"; echo $DATA;;
+	    d) DATA="$DATA,\"description\":\"$OPTARG\"";;
+	    u) DATA="$DATA,\"homepage\":\"$HOMEPAGE\"";;
+	    r) REMOTE=$OPTARG;;
+	    \?)
+	      usage
+	      exit 1
+	      ;;
+	  esac
+	done
 
-curl -u $USERNAME:$PASSWORD https://api.github.com/user/repos --data $DATA
+	DATA="{$DATA}"
+	echo "POST: $DATA"
+	curl --netrc --data "$DATA" "https://api.github.com/user/repos" 
 
-git init
-git remote add origin git@github.com:$USERNAME/$REPO.git
-git pull origin master
+	[[ "$REMOTE" -eq "HTTP" ]] && REMOTEURL="https://github.com/$USERNAME/$REPO"
+	[[ "$REMOTE" -eq "SSH" ]] && REMOTEURL="git@github.com:$USERNAME/$REPO.git"
+
+	mkdir $REPO
+	cd $REPO && git init && git remote add origin $REMOTEURL
+
+else
+	usage
+fi		
