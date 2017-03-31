@@ -5,9 +5,9 @@
 ```bash
 git clone http://www.github.com/brtknr/GitRepoFromCLI
 cd GitRepoFromCLI
-chmod u+x git-make
+chmod u+x git-mkrepo
 mkdir ~/.local/bin
-ln -s git-make ~/.local/bin
+ln -s git-mkrepo ~/.local/bin
 echo 'export PATH=$PATH:~/.local/bin' >> ~/.bashrc
 source ~/.bashrc
 ```
@@ -17,9 +17,9 @@ source ~/.bashrc
 ```bash
 git clone http://www.github.com/brtknr/GitRepoFromCLI
 cd GitRepoFromCLI
-chmod u+x git-make
+chmod u+x git-mkrepo
 mkdir ~/.local/bin
-ln -s git-make ~/.local/bin
+ln -s git-mkrepo ~/.local/bin
 echo 'export PATH=$PATH:~/.local/bin' >> ~/.bash_profile
 source ~/.bash_profile
 ```
@@ -29,5 +29,5 @@ source ~/.bash_profile
 ```bash
 mkdir ~/NewRepositoryFolder
 cd ~/NewRepositoryFolder
-git make
+git mkrepo
 ```
